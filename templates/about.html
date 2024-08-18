@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Semitic Letter Generator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+</head>
+<body>
+    <div class="container">
+        <h2>Enter Some Tags ...</h2>
+        <div class="info-tooltip">
+            <span class="info-icon">i</span>
+            <span class="tooltip-text">Enter three qualities to generate Semitic letters based on the ABJD system. The generated letters will reflect the input qualities.</span>
+        </div>
+        <div class="tag-input-container">
+            <div id="tags-container"></div>
+            <input type="text" id="tag-input" placeholder="Type something" onkeydown="handleKeyDown(event)">
+        </div>
+        <div id="letters-container" class="hidden">
+            <h3>Generated Letters:</h3>
+            <p id="generated-letters"></p>
+        </div>
+        <div id="history-container" class="hidden">
+            <h3>Recent Generations:</h3>
+            <ul id="history-list"></ul>
+        </div>
+    </div>
+
+    <script>
+        let tags = [];
+
+        function handleKeyDown(event) {
+            if (event.key === 'Enter' && event.target.value.trim() && tags.length < 3) {
+                addTag(event.target.value.trim());
+                event.target.value = '';
+                event.preventDefault();
+            }
+        }
+
+        function addTag(tag) {
+            tags.push(tag);
+            updateTags();
+            if (tags.length === 3) {
+                generateLetters();
+            }
+        }
+
+        function removeTag(index) {
+            tags.splice(index, 1);
+            updateTags();
+            document.getElementById('letters-container').classList.add('hidden');
+        }
+
+        function updateTags() {
+            const container = document.getElementById('tags-container');
+            container.innerHTML = tags.map((tag, index) => `
+                <span class="tag">
+                    ${tag}
+                    <button onclick="removeTag(${index})" class="remove-tag">&times;</button>
+                </span>
+            `).join('');
+
+            const input = document.getElementById('tag-input');
+            input.disabled = tags.length >= 3;
+            input.placeholder = tags.length < 3 ? "Type something" : "";
+        }
+
+        function generateLetters() {
+            fetch('/api/generate-letters', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ qualities: tags })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('generated-letters').textContent = data.letters;
+                document.getElementById('letters-container').classList.remove('hidden');
+                updateHistory();
+            })
+            .catch(error => console.error('Error generating letters:', error));
+        }
+
+        function updateHistory() {
+            fetch('/api/history')
+            .then(response => response.json())
+            .then(data => {
+                const historyList = document.getElementById('history-list');
+                historyList.innerHTML = data.map(item => `
+                    <li>
+                        <strong>${item.qualities.join(', ')}</strong>: ${item.letters}
+                        <br><small>${new Date(item.timestamp).toLocaleString()}</small>
+                    </li>
+                `).join('');
+                document.getElementById('history-container').classList.remove('hidden');
+            })
+            .catch(error => console.error('Error fetching history:', error));
+        }
+    </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About ABJD Dictionary</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>About ABJD Dictionary</h1>
+        <p>The ABJD Dictionary is a speculative project exploring the relationship between Semitic letters and their associated meanings, inspired by the ABJD system.</p>
+        <h2>Project Concept</h2>
+        <p>This project aims to create a speculative dictionary of Semitic sounds, as mapped in the ABJD system. It explores the power intrinsic in sounds and studies how Semitic linguistic sounds form an algorithm that predicts certain combinations of letters for wording individual concepts.</p>
+        <h2>How It Works</h2>
+        <p>Users input three qualities, and the system generates three Semitic letters that embody these qualities. This process is based on research into the associations, meanings, and symbolism of Semitic letters.</p>
+        <h2>Inspiration</h2>
+        <p>The project draws inspiration from various sources, including:</p>
+        <ul>
+            <li>The ABJD system of letter-sound associations</li>
+            <li>Research on Safaitic epigraphs</li>
+            <li>The concept of emergence in linguistic systems</li>
+            <li>The relationship between sound, meaning, and cultural context in Semitic languages</li>
+        </ul>
+        <h2>Future Directions</h2>
+        <p>Future developments of this project may include:</p>
+        <ul>
+            <li>Expanding the dictionary with more complex associations</li>
+            <li>Incorporating visual and auditory elements to represent generated letter combinations</li>
+            <li>Developing a more comprehensive algorithm for letter generation based on input qualities</li>
+        </ul>
+        <a href="/" class="button">Back to Generator</a>
+    </div>
+</body>
+</html>

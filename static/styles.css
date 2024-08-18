@@ -83,7 +83,7 @@ h2, h3 {
 #generated-letters {
     font-size: 2rem;
     font-family: monospace;
-    color: #4caf50;
+    color: #ff0000;
 }
 
 .hidden {
@@ -137,4 +137,33 @@ h2, h3 {
 
 #history-list li {
     margin-bottom: 0.5rem;
+}
+
+/* Additional styles for the About page */
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h1, h2 {
+    color: #4caf50;
+}
+
+ul {
+    padding-left: 20px;
+}
+
+.button {
+    display: inline-block;
+    background-color: #4caf50;
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-top: 20px;
+}
+
+.button:hover {
+    background-color: #45a049;
 }

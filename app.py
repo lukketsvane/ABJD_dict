@@ -53,6 +53,10 @@ def generate_letters(qualities):
 def index():
     return render_template('index.html')
 
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
 @app.route('/api/generate-letters', methods=['POST'])
 def api_generate_letters():
     qualities = request.json.get('qualities', [])
@@ -83,4 +87,4 @@ def api_history():
     return jsonify(history)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=8080)
