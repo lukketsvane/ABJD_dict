@@ -1,0 +1,24 @@
+# Ignore the .env file
+.env
+
+# Ignore Python bytecode
+*.py[cod]
+__pycache__/
+
+# Ignore virtual environment directories
+venv/
+ENV/
+env/
+.venv/
+.ENV/
+.venv/
+
+# Ignore Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Ignore database files
+*.sqlite3
+*.db
+
+# Ignore other CSV files that might contain sensitive information
+*.csv
