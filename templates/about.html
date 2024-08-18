@@ -1,137 +1,135 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Semitic Letter Generator</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
-</head>
-<body>
-    <div class="container">
-        <h2>Enter Some Tags ...</h2>
-        <div class="info-tooltip">
-            <span class="info-icon">i</span>
-            <span class="tooltip-text">Enter three qualities to generate Semitic letters based on the ABJD system. The generated letters will reflect the input qualities.</span>
-        </div>
-        <div class="tag-input-container">
-            <div id="tags-container"></div>
-            <input type="text" id="tag-input" placeholder="Type something" onkeydown="handleKeyDown(event)">
-        </div>
-        <div id="letters-container" class="hidden">
-            <h3>Generated Letters:</h3>
-            <p id="generated-letters"></p>
-        </div>
-        <div id="history-container" class="hidden">
-            <h3>Recent Generations:</h3>
-            <ul id="history-list"></ul>
-        </div>
-    </div>
 
-    <script>
-        let tags = [];
-
-        function handleKeyDown(event) {
-            if (event.key === 'Enter' && event.target.value.trim() && tags.length < 3) {
-                addTag(event.target.value.trim());
-                event.target.value = '';
-                event.preventDefault();
-            }
-        }
-
-        function addTag(tag) {
-            tags.push(tag);
-            updateTags();
-            if (tags.length === 3) {
-                generateLetters();
-            }
-        }
-
-        function removeTag(index) {
-            tags.splice(index, 1);
-            updateTags();
-            document.getElementById('letters-container').classList.add('hidden');
-        }
-
-        function updateTags() {
-            const container = document.getElementById('tags-container');
-            container.innerHTML = tags.map((tag, index) => `
-                <span class="tag">
-                    ${tag}
-                    <button onclick="removeTag(${index})" class="remove-tag">&times;</button>
-                </span>
-            `).join('');
-
-            const input = document.getElementById('tag-input');
-            input.disabled = tags.length >= 3;
-            input.placeholder = tags.length < 3 ? "Type something" : "";
-        }
-
-        function generateLetters() {
-            fetch('/api/generate-letters', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ qualities: tags })
-            })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('generated-letters').textContent = data.letters;
-                document.getElementById('letters-container').classList.remove('hidden');
-                updateHistory();
-            })
-            .catch(error => console.error('Error generating letters:', error));
-        }
-
-        function updateHistory() {
-            fetch('/api/history')
-            .then(response => response.json())
-            .then(data => {
-                const historyList = document.getElementById('history-list');
-                historyList.innerHTML = data.map(item => `
-                    <li>
-                        <strong>${item.qualities.join(', ')}</strong>: ${item.letters}
-                        <br><small>${new Date(item.timestamp).toLocaleString()}</small>
-                    </li>
-                `).join('');
-                document.getElementById('history-container').classList.remove('hidden');
-            })
-            .catch(error => console.error('Error fetching history:', error));
-        }
-    </script>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About ABJD Dictionary</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        .container {
+            max-width: 800px;
+        }
+
+        h1,
+        h2,
+        h3 {
+            color: #FFFFFF;
+            margin-top: 1.5em;
+            margin-bottom: 0.5em;
+        }
+
+        p,
+        ul {
+            margin-bottom: 1em;
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        .back-button {
+            display: inline-block;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: #FFFFFF;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+
+        .back-button:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+    </style>
 </head>
+
 <body>
+    <a href="/" class="nav-icon home-icon" title="Home">H</a>
+    <a href="/about" class="nav-icon about-icon" title="About">A</a>
+
     <div class="container">
-        <h1>About ABJD Dictionary</h1>
-        <p>The ABJD Dictionary is a speculative project exploring the relationship between Semitic letters and their associated meanings, inspired by the ABJD system.</p>
-        <h2>Project Concept</h2>
-        <p>This project aims to create a speculative dictionary of Semitic sounds, as mapped in the ABJD system. It explores the power intrinsic in sounds and studies how Semitic linguistic sounds form an algorithm that predicts certain combinations of letters for wording individual concepts.</p>
-        <h2>How It Works</h2>
-        <p>Users input three qualities, and the system generates three Semitic letters that embody these qualities. This process is based on research into the associations, meanings, and symbolism of Semitic letters.</p>
-        <h2>Inspiration</h2>
-        <p>The project draws inspiration from various sources, including:</p>
+        <h1>ABJD Dictionary</h1>
+
+        <h2>Project Overview</h2>
+        <p>The ABJD Dictionary is a speculative exploration of Semitic languages and phonosemantics, inspired by the
+            ancient ABJD system. This project aims to create a unique dictionary that maps the intrinsic power and
+            meanings of Semitic sounds.</p>
+
+        <h2>Core Concepts</h2>
+        <h3>Semitic Linguistic Sounds</h3>
+        <p>We investigate how Semitic linguistic sounds form an algorithm that predicts letter combinations for specific
+            concepts. This research delves into whether concepts determine the letters used to describe them, or if
+            letters predate concepts in time.</p>
+
+        <h3>Emergence in Linguistics</h3>
+        <p>The project focuses on the phenomenon of "emergence" in linguistic systems. We explore how combining certain
+            entities can lead to the emergence of patterns or systems, regardless of their chaotic or organized nature.
+        </p>
+
+        <h2>Key Features</h2>
         <ul>
-            <li>The ABJD system of letter-sound associations</li>
-            <li>Research on Safaitic epigraphs</li>
-            <li>The concept of emergence in linguistic systems</li>
-            <li>The relationship between sound, meaning, and cultural context in Semitic languages</li>
+            <li><strong>Triliteral Root System:</strong> Explores the three-letter root system fundamental to Semitic
+                languages.</li>
+            <li><strong>Letter-Sound Associations:</strong> Examines the relationships between letters, their sounds,
+                and associated meanings.</li>
+            <li><strong>Numerical Values:</strong> Investigates the numerical aspects of letters and their potential
+                significance.</li>
+            <li><strong>Environmental Influence:</strong> Considers how the original environment of Semitic languages
+                influenced their development.</li>
         </ul>
+
+        <h2>Examples and Methodology</h2>
+        <h3>Case Study: شجرة (Tree)</h3>
+        <ul>
+            <li>Root: ش_._ج_._ر (sh_._j_._r)</li>
+            <li>Letter Breakdown:
+                <ul>
+                    <li>ŠĪN (𐤔): Roots, light, togetherness</li>
+                    <li>GĪML (𐤓): Size, space, beauty</li>
+                    <li>REŠ (𐤂): Beginning, creation, movement</li>
+                </ul>
+            </li>
+        </ul>
+
+        <h3>Numerical Analysis</h3>
+        <ul>
+            <li>Numerical values of letters (e.g., Shin: 60, 300; Giml: 3; Res: 200)</li>
+            <li>Sum interpretations and their symbolic meanings</li>
+        </ul>
+
+        <h2>Theoretical Framework</h2>
+        <ul>
+            <li><strong>Phonosemantic Associations:</strong> Each letter carries specific connotations, shapes, colors,
+                and phenomena.</li>
+            <li><strong>Cultural and Historical Context:</strong> Incorporates research on Safaitic epigraphs and other
+                historical linguistic sources.</li>
+            <li><strong>Cross-Disciplinary Approach:</strong> Integrates concepts from linguistics, philosophy, and
+                cultural studies.</li>
+        </ul>
+
         <h2>Future Directions</h2>
-        <p>Future developments of this project may include:</p>
+        <ol>
+            <li>Timeline of sound chronology in Semitic languages</li>
+            <li>Exploration of vocality and tonality in relation to climate and environment</li>
+            <li>Development of a comprehensive algorithm for predicting letter-concept relationships</li>
+        </ol>
+
+        <h2>Artistic and Academic Applications</h2>
         <ul>
-            <li>Expanding the dictionary with more complex associations</li>
-            <li>Incorporating visual and auditory elements to represent generated letter combinations</li>
-            <li>Developing a more comprehensive algorithm for letter generation based on input qualities</li>
+            <li>Creation of sine wave prints for vocalized letters</li>
+            <li>Compilation of a booklet on sound meanings and associations</li>
+            <li>Potential for an immersive exhibition engaging all five senses</li>
         </ul>
-        <a href="/" class="button">Back to Generator</a>
+
+        <h2>Conclusion</h2>
+        <p>The ABJD Dictionary project offers a unique lens through which to view language, combining historical
+            linguistic analysis with speculative future-oriented thinking. It seeks to uncover hidden connections
+            between sounds, symbols, and meanings in Semitic languages, potentially revealing new insights into the
+            nature of language and human cognition.</p>
+
+        <a href="/" class="back-button">Back to Generator</a>
     </div>
 </body>
+
 </html>

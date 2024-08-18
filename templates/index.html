@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,16 +8,21 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
 </head>
+
 <body>
     <div class="container">
         <h1>ABJD Dictionary</h1>
         <div class="info-tooltip">
             <span class="info-icon">i</span>
-            <span class="tooltip-text">Enter three qualities to generate Semitic letters based on the ABJD system. The generated letters will reflect the input qualities.</span>
+            <span class="tooltip-text">Enter three qualities to generate Semitic letters based on the ABJD system. The
+                generated letters will reflect the input qualities.</span>
         </div>
+        <a href="/about" class="nav-icon about-icon" title="About">A</a>
+        <a href="/graph" class="nav-icon graph-icon" title="Knowledge Graph">G</a>
         <div class="tag-input-container">
             <div id="tags-container"></div>
-            <input type="text" id="tag-input" placeholder="Type a quality and press Enter" onkeydown="handleKeyDown(event)">
+            <input type="text" id="tag-input" placeholder="Type a quality and press Enter"
+                onkeydown="handleKeyDown(event)">
         </div>
         <div id="letters-container" class="hidden">
             <h2>Generated Letters:</h2>
@@ -70,51 +76,52 @@
         function generateLetters() {
             fetch('/api/generate-letters', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ qualities: tags })
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({qualities: tags})
             })
-            .then(response => response.json())
-            .then(data => {
-                const lettersContainer = document.getElementById('generated-letters');
-                lettersContainer.innerHTML = data.letters.split(',').map(letter => {
-                    const [semitic, latin] = letter.trim().split(' ');
-                    return `<span class="letter-pair"><span class="semitic">${semitic}</span> <span class="latin">${latin}</span></span>`;
-                }).join(', ');
-                document.getElementById('letters-container').classList.remove('hidden');
-                updateHistory();
-            })
-            .catch(error => console.error('Error generating letters:', error));
+                .then(response => response.json())
+                .then(data => {
+                    const lettersContainer = document.getElementById('generated-letters');
+                    lettersContainer.innerHTML = data.letters.split(',').map(letter => {
+                        const [semitic, latin] = letter.trim().split(' ');
+                        return `<span class="letter-pair"><span class="semitic">${semitic}</span> <span class="latin">${latin}</span></span>`;
+                    }).join(', ');
+                    document.getElementById('letters-container').classList.remove('hidden');
+                    updateHistory();
+                })
+                .catch(error => console.error('Error generating letters:', error));
         }
-    
+
         function updateHistory() {
             fetch('/api/history')
-            .then(response => response.json())
-            .then(data => {
-                const historyList = document.getElementById('history-list');
-                historyList.innerHTML = data.map(item => {
-                    if (item.letters && item.letters.includes(',')) {
-                        return `
+                .then(response => response.json())
+                .then(data => {
+                    const historyList = document.getElementById('history-list');
+                    historyList.innerHTML = data.map(item => {
+                        if (item.letters && item.letters.includes(',')) {
+                            return `
                             <li>
                                 <strong>${item.qualities.join(', ')}</strong>:
                                 ${item.letters.split(',').map(letter => {
-                                    const [semitic, latin] = letter.trim().split(' ');
-                                    return `<span class="letter-pair"><span class="semitic">${semitic}</span> <span class="latin">${latin}</span></span>`;
-                                }).join(', ')}
+                                const [semitic, latin] = letter.trim().split(' ');
+                                return `<span class="letter-pair"><span class="semitic">${semitic}</span> <span class="latin">${latin}</span></span>`;
+                            }).join(', ')}
                             </li>
                         `;
-                    } else {
-                        return `
+                        } else {
+                            return `
                             <li class="incomplete-entry">
                                 <strong>${item.qualities.join(', ')}</strong>:
                                 <span class="incomplete-message">Incomplete generation</span>
                             </li>
                         `;
-                    }
-                }).join('');
-                document.getElementById('history-container').classList.remove('hidden');
-            })
-            .catch(error => console.error('Error fetching history:', error));
+                        }
+                    }).join('');
+                    document.getElementById('history-container').classList.remove('hidden');
+                })
+                .catch(error => console.error('Error fetching history:', error));
         }
     </script>
 </body>
+
 </html>

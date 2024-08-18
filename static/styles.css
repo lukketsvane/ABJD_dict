@@ -20,10 +20,11 @@ body {
     position: relative;
 }
 
-h1, h2 {
+h1,
+h2 {
     color: #FFFFFF;
     margin-bottom: 1rem;
-    text-align: center;
+    text-align: left;
 }
 
 .tag-input-container {
@@ -77,7 +78,8 @@ h1, h2 {
     color: #FF4D4D;
 }
 
-#letters-container, #history-container {
+#letters-container,
+#history-container {
     margin-top: 1rem;
     text-align: center;
 }
@@ -125,7 +127,6 @@ h1, h2 {
     width: 200px;
     background-color: rgba(0, 0, 0, 0.8);
     color: #FFFFFF;
-    text-align: center;
     border-radius: 6px;
     padding: 5px;
     position: absolute;
@@ -169,4 +170,66 @@ h1, h2 {
 .incomplete-message {
     font-style: italic;
     font-size: 0.9em;
+}
+
+.info-buttons {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    gap: 10px;
+}
+
+.info-buttons .info-icon {
+    text-decoration: none;
+}
+
+/* ... (existing styles remain the same) ... */
+
+.nav-icon {
+    position: absolute;
+    top: 10px;
+    width: 30px;
+    height: 30px;
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #FFFFFF;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 30px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.about-icon {
+    right: 50px;
+}
+
+.graph-icon {
+    right: 90px;
+}
+
+.home-icon {
+    left: 10px;
+}
+
+#graph-container {
+    width: 100%;
+    height: 600px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.links line {
+    stroke: #999;
+    stroke-opacity: 0.6;
+}
+
+.nodes circle {
+    stroke: #fff;
+    stroke-width: 1.5px;
+}
+
+.labels text {
+    fill: #fff;
 }
