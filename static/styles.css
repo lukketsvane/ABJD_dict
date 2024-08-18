@@ -1,0 +1,140 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #121212;
+    color: #e0e0e0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+}
+
+.container {
+    width: 100%;
+    max-width: 600px;
+    padding: 20px;
+    background-color: #1e1e1e;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+h2, h3 {
+    color: #ffffff;
+    margin-bottom: 1rem;
+}
+
+.tag-input-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    border: 1px solid #333;
+    border-radius: 4px;
+    background-color: #252525;
+    margin-bottom: 1rem;
+}
+
+#tag-input {
+    flex-grow: 1;
+    border: none;
+    background-color: transparent;
+    color: #e0e0e0;
+    font-size: 1rem;
+    padding: 0.25rem;
+}
+
+#tag-input:focus {
+    outline: none;
+}
+
+#tag-input::placeholder {
+    color: #888;
+}
+
+.tag {
+    display: inline-flex;
+    align-items: center;
+    background-color: #3a3a3a;
+    color: #ffffff;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.875rem;
+}
+
+.remove-tag {
+    background: none;
+    border: none;
+    color: #888;
+    margin-left: 0.25rem;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.remove-tag:hover {
+    color: #ff4d4d;
+}
+
+#letters-container, #history-container {
+    margin-top: 1rem;
+}
+
+#generated-letters {
+    font-size: 2rem;
+    font-family: monospace;
+    color: #4caf50;
+}
+
+.hidden {
+    display: none;
+}
+
+.info-tooltip {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.info-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background-color: #4caf50;
+    color: white;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 20px;
+    cursor: pointer;
+}
+
+.tooltip-text {
+    visibility: hidden;
+    width: 200px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -100px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.info-tooltip:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
+
+#history-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+#history-list li {
+    margin-bottom: 0.5rem;
+}

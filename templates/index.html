@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Semitic Letter Generator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+</head>
+<body>
+    <div class="container">
+        <h2>Enter Some Tags ...</h2>
+        <div class="info-tooltip">
+            <span class="info-icon">i</span>
+            <span class="tooltip-text">Enter three qualities to generate Semitic letters based on the ABJD system. The generated letters will reflect the input qualities.</span>
+        </div>
+        <div class="tag-input-container">
+            <div id="tags-container"></div>
+            <input type="text" id="tag-input" placeholder="Type something" onkeydown="handleKeyDown(event)">
+        </div>
+        <div id="letters-container" class="hidden">
+            <h3>Generated Letters:</h3>
+            <p id="generated-letters"></p>
+        </div>
+        <div id="history-container" class="hidden">
+            <h3>Recent Generations:</h3>
+            <ul id="history-list"></ul>
+        </div>
+    </div>
+
+    <script>
+        let tags = [];
+
+        function handleKeyDown(event) {
+            if (event.key === 'Enter' && event.target.value.trim() && tags.length < 3) {
+                addTag(event.target.value.trim());
+                event.target.value = '';
+                event.preventDefault();
+            }
+        }
+
+        function addTag(tag) {
+            tags.push(tag);
+            updateTags();
+            if (tags.length === 3) {
+                generateLetters();
+            }
+        }
+
+        function removeTag(index) {
+            tags.splice(index, 1);
+            updateTags();
+            document.getElementById('letters-container').classList.add('hidden');
+        }
+
+        function updateTags() {
+            const container = document.getElementById('tags-container');
+            container.innerHTML = tags.map((tag, index) => `
+                <span class="tag">
+                    ${tag}
+                    <button onclick="removeTag(${index})" class="remove-tag">&times;</button>
+                </span>
+            `).join('');
+
+            const input = document.getElementById('tag-input');
+            input.disabled = tags.length >= 3;
+            input.placeholder = tags.length < 3 ? "Type something" : "";
+        }
+
+        function generateLetters() {
+            fetch('/api/generate-letters', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ qualities: tags })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('generated-letters').textContent = data.letters;
+                document.getElementById('letters-container').classList.remove('hidden');
+                updateHistory();
+            })
+            .catch(error => console.error('Error generating letters:', error));
+        }
+
+        function updateHistory() {
+            fetch('/api/history')
+            .then(response => response.json())
+            .then(data => {
+                const historyList = document.getElementById('history-list');
+                historyList.innerHTML = data.map(item => `
+                    <li>
+                        <strong>${item.qualities.join(', ')}</strong>: ${item.letters}
+                        <br><small>${new Date(item.timestamp).toLocaleString()}</small>
+                    </li>
+                `).join('');
+                document.getElementById('history-container').classList.remove('hidden');
+            })
+            .catch(error => console.error('Error fetching history:', error));
+        }
+    </script>
+</body>
+</html>
